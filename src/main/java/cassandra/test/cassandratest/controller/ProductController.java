@@ -50,6 +50,19 @@ public class ProductController {
         }
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<ProductEntity> updateProduct(@PathVariable UUID id, @RequestBody ProductEntity product) {
+        var savedProduct = this.productEntityRepository.findById(id);
+        if (savedProduct.isPresent()) {
+            var sp = savedProduct.get();
+            sp.setName(product.getName());
+            sp.setDescription(product.getDescription());
+            sp.setValue(product.getValue());
+            return new ResponseEntity<>(this.productEntityRepository.save(sp), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> deleteProduct(@PathVariable UUID id) {
         try {
